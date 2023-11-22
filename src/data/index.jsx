@@ -1,4 +1,4 @@
-import { DesktopOutlined, PieChartOutlined } from "@ant-design/icons";
+import { SearchOutlined, SelectOutlined } from "@ant-design/icons";
 
 function getItem(label, key, icon, children) {
   return {
@@ -11,24 +11,21 @@ function getItem(label, key, icon, children) {
 
 export const dropItems = [
   {
-    key: "1",
-    label: (
-      <a rel="退出登录" href="/">
-        退出登录
-      </a>
-    ),
+    key: "/login",
+    label: <div>退出登录</div>,
   },
   {
-    key: "2",
-    label: (
-      <a rel="noopener noreferrer" href="/personal">
-        个人信息
-      </a>
-    ),
+    key: "/personal",
+    label: <div>个人信息</div>,
   },
 ];
 
-export const siderItems = [
-  getItem("学生界面", "/admin/student", <PieChartOutlined />),
-  getItem("教师界面", "/admin/teacher", <DesktopOutlined />),
+export const menuItems = [
+  getItem("课程管理", "/student/course", <SelectOutlined />),
+  getItem("查询信息", "/student/query", <SearchOutlined />, [
+    getItem("查询学生", "/student/query/student"),
+    getItem("查询教师", "/student/query/teacher"),
+    getItem("查询成绩", "/student/query/grade"),
+    getItem("查询课程", "/student/query/course"),
+  ]),
 ];
