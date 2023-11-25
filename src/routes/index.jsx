@@ -50,6 +50,78 @@ export default [
     ],
   },
   {
+    path: "/teacher",
+    element: <StudentLayout />,
+    children: [
+      {
+        path: "course",
+        element: <List />,
+      },
+      {
+        path: "query",
+        element: <Welcome />,
+        children: [
+          {
+            path: "student",
+            element: <QueryStudent />,
+          },
+          {
+            path: "teacher",
+            element: <QueryTeacher />,
+          },
+          {
+            path: "grade",
+            element: <QueryGrade />,
+          },
+          {
+            path: "course",
+            element: <QueryCourse />,
+          },
+        ],
+      },
+      {
+        path: "",
+        element: <Navigate to="course" />,
+      },
+    ],
+  },
+  {
+    path: "/administrator",
+    element: <StudentLayout />,
+    children: [
+      {
+        path: "course",
+        element: <List />,
+      },
+      {
+        path: "query",
+        element: <Welcome />,
+        children: [
+          {
+            path: "student",
+            element: <QueryStudent />,
+          },
+          {
+            path: "teacher",
+            element: <QueryTeacher />,
+          },
+          {
+            path: "grade",
+            element: <QueryGrade />,
+          },
+          {
+            path: "course",
+            element: <QueryCourse />,
+          },
+        ],
+      },
+      {
+        path: "",
+        element: <Navigate to="course" />,
+      },
+    ],
+  },
+  {
     path: "/",
     element: <Navigate to="/login" />,
   },

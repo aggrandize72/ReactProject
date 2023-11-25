@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Card, Col, Row, Form, Radio, Input, Button } from "antd";
 import logo from "../../image/logo1.png";
 import index from "./index.module.css";
+import { post } from "../../utils/request";
+import axios from "axios";
 
 export default function Login() {
   const [radio, setRadio] = useState("/student");
@@ -22,12 +23,16 @@ export default function Login() {
             <Form
               // labelCol={{ xl: { span: 6 }, sm: { span: 10 }, xs: { span: 22 } }}
               labelCol={{ span: 6 }}
-              onFinish={(values) => {
-                console.log(values);
+              onFinish={(value) => {
+                console.log(value);
                 axios
-                  .post(`https://yapi.pro/mock/148180/User${radio}/login`)
+                  .post(` http://localhost:12345${radio}/login`, value, {
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  })
                   .then((response) => {
-                    console.log(response);
+                    console.log(response.data);
                     navigate(radio);
                   })
                   .catch((error) => {
@@ -49,7 +54,7 @@ export default function Login() {
               <br />
               <Form.Item
                 label="用户名"
-                name="userName"
+                name="username"
                 rules={[{ required: true, message: "请输入用户名" }]}
               >
                 <Input placeholder="请输入用户名" />

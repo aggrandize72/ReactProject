@@ -38,13 +38,13 @@ export default function QueryCourse() {
     </>
   );
 }
-
+// /projects/ReactProjects/my-vite-app
 const columns = [
   {
     title: "序号",
     key: "id",
-    render: (n, m, k) => {
-      return <span>{k + 1}</span>;
+    render: (n, m, id) => {
+      return <span>{id + 1}</span>;
     },
   },
   {
