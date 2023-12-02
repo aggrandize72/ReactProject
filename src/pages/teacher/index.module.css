@@ -1,0 +1,26 @@
+.header_img {
+  float: right;
+  margin: 0 20px 0 0;
+}
+/* 
+.sider_img {
+  text-align: center;
+  margin: 30px 0 10px 0;
+} */
+
+.sider_img {
+  width: 50%;
+  display: block;
+  border-radius: 15px;
+  margin: 20px auto;
+}
+
+.header_span {
+  font-size: 1.2rem;
+  margin-left: 10px;
+}
+
+.breadcrumb {
+  margin-bottom: 15px;
+  cursor: default;
+}

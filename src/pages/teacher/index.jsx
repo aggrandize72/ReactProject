@@ -3,21 +3,22 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { Layout, Menu, Dropdown, theme, Button, Breadcrumb } from "antd";
 import logo from "../../image/p1.png";
-import { dropItems, studentMenuItems as menuItems } from "../../data";
-import studentStyle from "./index.module.css";
+import { dropItems, teacherMenuItems as menuItems } from "../../data";
+import teacherStyle from "./index.module.css";
 
 const { Header, Content, Sider } = Layout;
 
-export default function StudentLayout() {
-  const navigate = useNavigate();
-  const [collapsed, setCollapsed] = useState(false);
-  const [navurl, setNavurl] = useState([]);
-  const { pathname } = useLocation();
-
-  const [menuDefaultKey, setMenuDefaultKey] = useState(set(pathname));
+export default function TeacherLayout() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const [collapsed, setCollapsed] = useState(false);
+  const [navurl, setNavurl] = useState([]);
+  const [menuDefaultKey, setMenuDefaultKey] = useState(set(pathname));
+
   useEffect(() => {
     setMenuDefaultKey(set(pathname));
     setNavurl(
@@ -38,19 +39,20 @@ export default function StudentLayout() {
         const temp = arrObj.filter(({ key }) => {
           return pathname.includes(key);
         });
+
         return temp.length > 0
-          ? [{ title: "首页", key: "/student" }, ...temp]
+          ? [{ title: "首页", key: "/teacher" }, ...temp]
           : [];
       })(pathname)
     );
   }, [pathname]);
 
-  function set(key) {
+  function set(pathname) {
     let arrObj = [];
 
     const fn = (_arr) => {
       _arr.forEach((n) => {
-        if (key.includes(n.key)) {
+        if (pathname.includes(n.key)) {
           arrObj = [...arrObj, n.key];
           if (n.children) {
             fn(n.children);
@@ -59,10 +61,8 @@ export default function StudentLayout() {
       });
     };
     fn(menuItems);
-
     return arrObj;
   }
-
   return (
     <Layout
       style={{
@@ -70,7 +70,7 @@ export default function StudentLayout() {
       }}
     >
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <img src={logo} className={studentStyle.sider_img} />
+        <img src={logo} className={teacherStyle.sider_img} />
         <Menu
           theme="dark"
           mode="inline"
@@ -99,7 +99,7 @@ export default function StudentLayout() {
               height: 64,
             }}
           />
-          <span className={studentStyle.header_span}>caox 的教育管理系统</span>
+          <span className={teacherStyle.header_span}>caox 的教育管理系统</span>
           <Dropdown
             menu={{
               items: dropItems,
@@ -114,7 +114,7 @@ export default function StudentLayout() {
               onClick={(e) => {
                 e.defaultPrevented();
               }}
-              className={studentStyle.header_img}
+              className={teacherStyle.header_img}
             >
               <img
                 src={logo}
@@ -148,7 +148,7 @@ export default function StudentLayout() {
             }}
             items={navurl}
             separator=">"
-            className={studentStyle.breadcrumb}
+            className={teacherStyle.breadcrumb}
           />
           <Outlet />
         </Content>

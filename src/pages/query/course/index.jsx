@@ -1,88 +1,100 @@
-import { Button, Card, Form, Input, Table, Switch } from "antd";
-import React, { useState } from "react";
+import { Card, Form, Input, Table, Switch } from "antd";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
-export default function QueryCourse() {
+export default function QueryStudent() {
+  const url = [
+    "http://localhost:12345/course",
+    "http://localhost:12345/course/open",
+  ];
   const [isOpen, setIsOpen] = useState(false);
-  const [filterText, setFilterText] = useState("");
-
+  const [inputCname, setInputCname] = useState("");
+  const [dataSource, setDataSource] = useState([]);
   const tableData = dataSource.filter(
-    (item) => item.name.indexOf(filterText) != -1
+    ({ cname }) => cname.indexOf(inputCname) != -1
   );
 
-  function onClick() {
+  useEffect(() => {
+    axios
+      .get(url[0])
+      .then(({ data: { data } }) => {
+        setDataSource(
+          data.map(({ cno, cname, ccredit }) => ({ key: cno, cname, ccredit }))
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  function handleClick() {
+    axios
+      .get(url[isOpen ? 0 : 1])
+      .then(({ data: { data } }) => {
+        setDataSource(
+          data.map(({ cno, cname, ccredit }) => ({ key: cno, cname, ccredit }))
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     setIsOpen(!isOpen);
   }
 
   return (
     <>
       <Card
-        title="教师查询"
+        title="课程查询"
         extra={
           <div>
-            <Switch checked={isOpen} onClick={onClick} />
+            <Switch
+              checked={isOpen}
+              onClick={handleClick}
+              style={{ marginRight: "8px" }}
+            />
+            开课课程
           </div>
         }
       >
         <Form layout="inline">
-          <Form.Item label="教师名" style={{ marginBottom: "10px" }}>
+          <Form.Item label="课程名" style={{ marginBottom: "10px" }}>
             <Input
-              placeholder="请输入要查询的姓名"
-              value={filterText}
-              onChange={(e) => setFilterText(e.target.value)}
+              placeholder="请输入要查询的课程"
+              value={inputCname}
+              onChange={(e) => setInputCname(e.target.value)}
             />
           </Form.Item>
         </Form>
 
-        <Table dataSource={tableData} columns={columns}></Table>
+        <Table
+          pagination={{ pageSize: 7 }}
+          dataSource={tableData}
+          columns={[
+            {
+              title: "课程号",
+              dataIndex: "key",
+              key: "key",
+            },
+            {
+              title: "课程名",
+              dataIndex: "cname",
+              key: "c_name",
+            },
+            {
+              title: "学分",
+              dataIndex: "ccredit",
+              key: "c_credit",
+            },
+            {
+              title: "...",
+              key: "...",
+              render() {
+                return <div>loading...</div>;
+              },
+            },
+          ]}
+        ></Table>
       </Card>
     </>
   );
 }
-// /projects/ReactProjects/my-vite-app
-const columns = [
-  {
-    title: "序号",
-    key: "id",
-    render: (n, m, id) => {
-      return <span>{id + 1}</span>;
-    },
-  },
-  {
-    title: "课程号",
-    dataIndex: "no",
-    key: "c_no",
-  },
-  {
-    title: "课程名",
-    dataIndex: "name",
-    key: "c_name",
-  },
-  {
-    title: "学分",
-    dataIndex: "credit",
-    key: "c_credit",
-  },
-  {
-    title: "",
-    key: "c_button",
-    render: () => {
-      return <Button></Button>;
-    },
-    width: "10%",
-  },
-];
-
-const dataSource = [
-  {
-    key: 1,
-    no: "0201",
-    name: "数学",
-    credit: 3,
-  },
-  {
-    key: 2,
-    no: "0202",
-    name: "英语",
-    credit: 2,
-  },
-];

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Card, Col, Row, Form, Radio, Input, Button } from "antd";
 import logo from "../../image/logo1.png";
 import index from "./index.module.css";
-import { post } from "../../utils/request";
 import axios from "axios";
 
 export default function Login() {
@@ -21,12 +20,11 @@ export default function Login() {
           <img src={logo} className={index.img} />
           <Card title="caox 的教育管理系统" style={{ textAlign: "center" }}>
             <Form
-              // labelCol={{ xl: { span: 6 }, sm: { span: 10 }, xs: { span: 22 } }}
               labelCol={{ span: 6 }}
               onFinish={(value) => {
                 console.log(value);
                 axios
-                  .post(` http://localhost:12345${radio}/login`, value, {
+                  .post(`http://localhost:12345${radio}/login`, value, {
                     headers: {
                       "Content-Type": "application/json",
                     },

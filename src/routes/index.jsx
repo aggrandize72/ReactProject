@@ -6,7 +6,15 @@ import QueryStudent from "../pages/query/student";
 import QueryTeacher from "../pages/query/teacher";
 import QueryGrade from "../pages/query/grade";
 import QueryCourse from "../pages/query/course";
-import List from "../pages/student/list";
+import Select from "../pages/student/select";
+import TeacherLayout from "../pages/teacher";
+import Open from "../pages/teacher/open";
+import Update from "../pages/teacher/update";
+import AdministratorLayout from "../pages/administrator";
+import AddStudent from "../pages/administrator/add-student";
+import AddTeacher from "../pages/administrator/add-teacher";
+import AddCourse from "../pages/administrator/add-course";
+import Personal from "../pages/personal";
 
 export default [
   {
@@ -19,7 +27,7 @@ export default [
     children: [
       {
         path: "course",
-        element: <List />,
+        element: <Select />,
       },
       {
         path: "query",
@@ -40,6 +48,10 @@ export default [
           {
             path: "course",
             element: <QueryCourse />,
+          },
+          {
+            path: "",
+            element: <Navigate to="student" />,
           },
         ],
       },
@@ -51,11 +63,25 @@ export default [
   },
   {
     path: "/teacher",
-    element: <StudentLayout />,
+    element: <TeacherLayout />,
     children: [
       {
         path: "course",
-        element: <List />,
+        element: <Welcome />,
+        children: [
+          {
+            path: "open",
+            element: <Open />,
+          },
+          {
+            path: "update",
+            element: <Update />,
+          },
+          {
+            path: "",
+            element: <Navigate to="open" />,
+          },
+        ],
       },
       {
         path: "query",
@@ -76,6 +102,10 @@ export default [
           {
             path: "course",
             element: <QueryCourse />,
+          },
+          {
+            path: "",
+            element: <Navigate to="student" />,
           },
         ],
       },
@@ -87,11 +117,29 @@ export default [
   },
   {
     path: "/administrator",
-    element: <StudentLayout />,
+    element: <AdministratorLayout />,
     children: [
       {
-        path: "course",
-        element: <List />,
+        path: "add",
+        element: <Welcome />,
+        children: [
+          {
+            path: "student",
+            element: <AddStudent />,
+          },
+          {
+            path: "teacher",
+            element: <AddTeacher />,
+          },
+          {
+            path: "course",
+            element: <AddCourse />,
+          },
+          {
+            path: "",
+            element: <Navigate to="student" />,
+          },
+        ],
       },
       {
         path: "query",
@@ -117,9 +165,13 @@ export default [
       },
       {
         path: "",
-        element: <Navigate to="course" />,
+        element: <Navigate to="add" />,
       },
     ],
+  },
+  {
+    path: "/personal",
+    element: <Personal />,
   },
   {
     path: "/",

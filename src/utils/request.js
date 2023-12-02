@@ -7,7 +7,11 @@ const instanceAxios = axios.create({
 });
 
 export const get = (url, params = {}) => instanceAxios.get(url, { params });
-export const post = (url, params = {}) => instanceAxios.post(url, { params });
+export const post = (url, params = {}, header = {}) => {
+  console.log(params, header);
+  return instanceAxios.post(url, { params }, { header });
+};
+
 export const myDelete = (url, params = {}) =>
   instanceAxios.delete(url, { params });
 export const update = (url, params = {}) =>
