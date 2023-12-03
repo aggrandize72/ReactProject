@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Col, Row, Form, Radio, Input, Button } from "antd";
+import { useDispatch } from "react-redux";
 import logo from "../../image/logo1.png";
 import index from "./index.module.css";
 import axios from "axios";
+import { studentSignIn } from "../../store/slices/student";
+import { teacherSignIn } from "../../store/slices/teacher";
+import { administratorSignIn } from "../../store/slices/administrator";
 
 export default function Login() {
   const [radio, setRadio] = useState("/student");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   return (
@@ -30,7 +35,19 @@ export default function Login() {
                     },
                   })
                   .then((response) => {
-                    console.log(response.data);
+                    switch (radio) {
+                      case "/student":
+                        dispatch(studentSignIn(response.data.data));
+                        break;
+                      case "/teacher":
+                        dispatch(teacherSignIn(response.data.data));
+                        break;
+                      case "/administrator":
+                        dispatch(administratorSignIn(response.data.data));
+                        break;
+                      default:
+                        break;
+                    }
                     navigate(radio);
                   })
                   .catch((error) => {

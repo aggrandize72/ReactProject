@@ -11,12 +11,12 @@ function getItem(label, key, icon, children) {
 
 export const dropItems = [
   {
-    key: "/login",
-    label: <div>退出登录</div>,
-  },
-  {
     key: "/personal",
     label: <div>个人信息</div>,
+  },
+  {
+    key: "/login",
+    label: <div>退出登录</div>,
   },
 ];
 

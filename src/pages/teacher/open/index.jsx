@@ -1,11 +1,13 @@
 import { Button, Card, Form, Input, Modal, Table, message } from "antd";
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 
 export default function Open() {
   const [dataSource, setDataSource] = useState([]);
   const [filterText, setFilterText] = useState("");
   const [isShow, setIsShow] = useState(false);
+  const teacherInfo = useSelector((state) => state.teacher.teacher);
   const inputRef = useRef(null);
   const clickKeyRef = useRef(0);
   const tableData = dataSource.filter(
@@ -13,7 +15,7 @@ export default function Open() {
   );
   useEffect(() => {
     axios
-      .get("http://localhost:12345/course/list/20030001")
+      .get(`http://localhost:12345/course/list/${teacherInfo.tno}`)
       .then(({ data: { data } }) => {
         setDataSource(data.map((item) => ({ ...item, key: item.cno })));
       })
@@ -34,7 +36,7 @@ export default function Open() {
               axios
                 .post(
                   "http://localhost:12345/course/list",
-                  { list: dataSource, no: "20030001" },
+                  { list: dataSource, no: teacherInfo.tno },
                   {
                     headers: {
                       "Content-Type": "application/json",

@@ -1,19 +1,20 @@
 import { Button, Card, Form, Input, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 
 export default function Select() {
+  const studentInfo = useSelector((state) => state.student.student);
   const [dataSource, setDataSource] = useState([]);
   const [cname, setCname] = useState("");
   const [tname, setTname] = useState("");
   const tableSource = dataSource.filter(
     (item) => item.cname.indexOf(cname) != -1 && item.tname.indexOf(tname) != -1
   );
-  console.log(dataSource);
 
   useEffect(() => {
     axios
-      .get("http://localhost:12345/open/list/0211001")
+      .get(`http://localhost:12345/open/list/${studentInfo.sno}`)
       .then(({ data: { data } }) => {
         setDataSource(data.map((item) => ({ ...item, key: item.openId })));
       })
@@ -41,7 +42,7 @@ export default function Select() {
               axios
                 .post(
                   "http://localhost:12345/open/list",
-                  { list: dataSource, no: "0211001" },
+                  { list: dataSource, no: studentInfo.sno },
                   {
                     headers: {
                       "Content-Type": "application/json",

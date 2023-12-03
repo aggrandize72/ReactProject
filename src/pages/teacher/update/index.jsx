@@ -1,18 +1,21 @@
 import { Button, Card, Form, Input, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 
 export default function Update() {
   const [dataSource, setDataSource] = useState([]);
   const [cname, setCname] = useState("");
   const [sname, setSname] = useState("");
+
+  const teacherInfo = useSelector((state) => state.teacher.teacher);
   const tableData = dataSource.filter(
     ({ cname, sname }) =>
       cname.indexOf(cname) != -1 && sname.indexOf(sname) != -1
   );
   useEffect(() => {
     axios
-      .get("http://localhost:12345/grade/20030001")
+      .get(`http://localhost:12345/grade/${teacherInfo.tno}`)
       .then(({ data: { data } }) => {
         setDataSource(data.map((item) => ({ ...item, key: item.gradeId })));
       })
@@ -29,11 +32,10 @@ export default function Update() {
           <Button
             type="primary"
             onClick={() => {
-              console.log({ list: dataSource, no: "20030001" });
               axios
                 .post(
                   "http://localhost:12345/grade",
-                  { list: dataSource, no: "20030001" },
+                  { list: dataSource, no: teacherInfo.tno },
                   {
                     headers: {
                       "Content-Type": "application/json",

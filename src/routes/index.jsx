@@ -14,7 +14,6 @@ import AdministratorLayout from "../pages/administrator";
 import AddStudent from "../pages/administrator/add-student";
 import AddTeacher from "../pages/administrator/add-teacher";
 import AddCourse from "../pages/administrator/add-course";
-import Personal from "../pages/personal";
 
 export default [
   {
@@ -168,10 +167,6 @@ export default [
         element: <Navigate to="add" />,
       },
     ],
-  },
-  {
-    path: "/personal",
-    element: <Personal />,
   },
   {
     path: "/",

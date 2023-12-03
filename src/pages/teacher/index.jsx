@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
-import { Layout, Menu, Dropdown, theme, Button, Breadcrumb } from "antd";
+import {
+  Layout,
+  Menu,
+  Dropdown,
+  theme,
+  Button,
+  Breadcrumb,
+  Card,
+  Input,
+  Modal,
+  Form,
+} from "antd";
+import { useSelector, useDispatch } from "react-redux";
 import logo from "../../image/p1.png";
 import { dropItems, teacherMenuItems as menuItems } from "../../data";
 import teacherStyle from "./index.module.css";
+import { teacherSignOut } from "../../store/slices/teacher";
 
 const { Header, Content, Sider } = Layout;
 
@@ -12,39 +25,51 @@ export default function TeacherLayout() {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const teacherInfo = useSelector((state) => state.teacher);
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [collapsed, setCollapsed] = useState(false);
+  const [isShow, setIsShow] = useState(false);
   const [navurl, setNavurl] = useState([]);
   const [menuDefaultKey, setMenuDefaultKey] = useState(set(pathname));
+  const [password, setPassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+    again: "",
+  });
 
   useEffect(() => {
-    setMenuDefaultKey(set(pathname));
-    setNavurl(
-      ((pathname) => {
-        let arrObj = [];
+    if (!teacherInfo.isLogged) {
+      navigate("/login");
+    } else {
+      setMenuDefaultKey(set(pathname));
+      setNavurl(
+        ((pathname) => {
+          let arrObj = [];
 
-        const fn = (_arr) => {
-          _arr.forEach((n) => {
-            const { children, key, label } = n;
-            arrObj.push({ title: label, key });
+          const fn = (_arr) => {
+            _arr.forEach((n) => {
+              const { children, key, label } = n;
+              arrObj.push({ title: label, key });
 
-            if (children) {
-              fn(children);
-            }
+              if (children) {
+                fn(children);
+              }
+            });
+          };
+          fn(menuItems);
+          const temp = arrObj.filter(({ key }) => {
+            return pathname.includes(key);
           });
-        };
-        fn(menuItems);
-        const temp = arrObj.filter(({ key }) => {
-          return pathname.includes(key);
-        });
 
-        return temp.length > 0
-          ? [{ title: "首页", key: "/teacher" }, ...temp]
-          : [];
-      })(pathname)
-    );
+          return temp.length > 0
+            ? [{ title: "首页", key: "/teacher" }, ...temp]
+            : [];
+        })(pathname)
+      );
+    }
   }, [pathname]);
 
   function set(pathname) {
@@ -104,7 +129,10 @@ export default function TeacherLayout() {
             menu={{
               items: dropItems,
               onClick: ({ key }) => {
-                navigate(key);
+                if (key === "/login") {
+                  dispatch(teacherSignOut());
+                  navigate(key);
+                }
               },
             }}
             placement="bottom"
@@ -112,7 +140,7 @@ export default function TeacherLayout() {
           >
             <a
               onClick={(e) => {
-                e.defaultPrevented();
+                e.preventDefault();
               }}
               className={teacherStyle.header_img}
             >
@@ -153,6 +181,156 @@ export default function TeacherLayout() {
           <Outlet />
         </Content>
       </Layout>
+      <Modal
+        open={isShow !== false}
+        footer={() => {
+          return (
+            <div>
+              <Button
+                onClick={() => {
+                  switch (isShow) {
+                    case "update": {
+                      if (
+                        teacherInfo.teacher.password === password.oldPassword
+                      ) {
+                        setIsShow("next");
+                      } else {
+                        alert("原密码错误");
+                      }
+                      break;
+                    }
+                    case "next": {
+                      if (password.newPassword === password.again) {
+                        axios
+                          .put(
+                            "http://localhost:12345/teacher",
+                            {
+                              ...teacherInfo.teacher,
+                              password: password.newPassword,
+                            },
+                            {
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                            }
+                          )
+                          .then(() => {
+                            dispatch(teacherSignOut());
+                            alert("修改成功,请重新登录");
+                            navigate("/login");
+                          })
+                          .catch((err) => {
+                            console.log(err);
+                          });
+                      } else {
+                        alert("两次密码不一致");
+                      }
+                      break;
+                    }
+                    default: {
+                      setIsShow("update");
+                      break;
+                    }
+                  }
+                }}
+              >
+                {isShow === "update"
+                  ? "下一步"
+                  : isShow === "next"
+                  ? "确定"
+                  : "修改密码"}
+              </Button>
+            </div>
+          );
+        }}
+        onCancel={() => {
+          setPassword({
+            oldPassword: "",
+            newPassword: "",
+            again: "",
+          });
+          setIsShow(false);
+        }}
+      >
+        <Card title="个人信息">
+          {isShow === "update" ? (
+            <Form>
+              <Form.Item
+                label="原密码"
+                name="oldPassword"
+                rules={[
+                  { required: true, message: "请输入允许选课的最大人数" },
+                ]}
+              >
+                <Input.Password
+                  placeholder="请输入原密码"
+                  value={password.oldPassword}
+                  onChange={(e) => {
+                    setPassword({
+                      ...password,
+                      oldPassword: e.target.value,
+                    });
+                  }}
+                />
+              </Form.Item>
+            </Form>
+          ) : isShow === "next" ? (
+            <Form>
+              <Form.Item
+                label="新密码"
+                name="newPassword"
+                rules={[
+                  { required: true, message: "请输入允许选课的最大人数" },
+                ]}
+              >
+                <Input.Password
+                  placeholder="请输入新密码"
+                  value={password.newPassword}
+                  onChange={(e) => {
+                    setPassword({
+                      ...password,
+                      newPassword: e.target.value,
+                    });
+                  }}
+                />
+              </Form.Item>
+              <Form.Item
+                label="再次确认"
+                name="again"
+                rules={[
+                  { required: true, message: "请输入允许选课的最大人数" },
+                ]}
+              >
+                <Input.Password
+                  placeholder="请再次确认密码"
+                  value={password.again}
+                  onChange={(e) => {
+                    setPassword({
+                      ...password,
+                      again: e.target.value,
+                    });
+                  }}
+                />
+              </Form.Item>
+            </Form>
+          ) : (
+            <Form>
+              <Form.Item label="工号" name="tno">
+                {"\u00A0"}
+                {teacherInfo.teacher.tno}
+              </Form.Item>
+              <Form.Item label="姓名" name="tname">
+                {"\u00A0"}
+                {teacherInfo.teacher.tname}
+              </Form.Item>
+              <Form.Item label="年龄" name="tage">
+                {"\u00A0"}
+                {teacherInfo.teacher.tage}
+              </Form.Item>
+            </Form>
+          )}
+        </Card>
+      </Modal>
     </Layout>
   );
 }
