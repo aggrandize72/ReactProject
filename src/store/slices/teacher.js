@@ -17,7 +17,7 @@ const teacherSlice = createSlice({
     },
     teacherUpdate: (state, action) => {
       state.teacher = { ...state.teacher, ...action.payload };
-      state.isLogged = true;
+      state.isLogged = false;
     },
   },
 });

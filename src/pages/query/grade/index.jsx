@@ -17,7 +17,6 @@ export default function QueryStudent() {
     axios
       .get("http://localhost:12345/grade")
       .then(({ data: { data } }) => {
-        console.log(data);
         setDataSource(
           data.map(({ gradeId, ...info }) => ({ key: gradeId, ...info }))
         );

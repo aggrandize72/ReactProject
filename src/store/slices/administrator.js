@@ -17,7 +17,7 @@ const administratorSlice = createSlice({
     },
     administratorUpdate: (state, action) => {
       state.administrator = { ...state.administrator, ...action.payload };
-      state.isLogged = true;
+      state.isLogged = false;
     },
   },
 });

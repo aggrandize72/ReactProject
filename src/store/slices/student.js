@@ -8,8 +8,6 @@ const studentSlice = createSlice({
   },
   reducers: {
     studentSignIn: (state, action) => {
-      console.log("state", state);
-      console.log("action", action);
       state.student = action.payload;
       state.isLogged = true;
     },
@@ -19,7 +17,7 @@ const studentSlice = createSlice({
     },
     studentUpdate: (state, action) => {
       state.student = { ...state.student, ...action.payload };
-      state.isLogged = true;
+      state.isLogged = false;
     },
   },
 });
